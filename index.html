@@ -1,0 +1,1575 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cook_Menu</title>
+  <meta name="theme-color" content="#FF6B35">
+  <meta name="description" content="个人自用菜谱本，记录食材、调料、步骤和下次改进。">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+  <style>
+    :root {
+      --primary: #ff6b35;
+      --primary-soft: #fff0ea;
+      --accent: #20c997;
+      --accent-soft: #e9fbf5;
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --text: #333333;
+      --muted: #888888;
+      --line: #eeeeee;
+      --danger: #d94b31;
+      --danger-soft: #fff1ee;
+      --shadow: 0 12px 32px rgba(51, 51, 51, 0.07);
+      --radius: 8px;
+      font-family: "PingFang SC", "Microsoft YaHei", "Source Han Sans SC", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .shell {
+      width: min(920px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 24px clamp(14px, 3vw, 28px) 96px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .title-group h1,
+    .title-group h2 {
+      margin: 0;
+      color: var(--text);
+      font-size: clamp(24px, 6vw, 34px);
+      line-height: 1.16;
+      letter-spacing: 0;
+    }
+
+    .title-group p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .icon-btn,
+    .ghost-btn,
+    .primary-btn,
+    .danger-btn,
+    .small-btn {
+      min-height: 40px;
+      border: 0;
+      border-radius: 999px;
+      font-weight: 800;
+    }
+
+    .icon-btn {
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 42px;
+      height: 42px;
+      color: var(--text);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .ghost-btn {
+      padding: 0 16px;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--line);
+    }
+
+    .primary-btn {
+      padding: 0 18px;
+      color: #ffffff;
+      background: var(--primary);
+      box-shadow: 0 12px 24px rgba(255, 107, 53, 0.24);
+    }
+
+    .danger-btn {
+      padding: 0 18px;
+      color: var(--danger);
+      background: var(--danger-soft);
+    }
+
+    .small-btn {
+      min-height: 34px;
+      padding: 0 12px;
+      color: var(--primary);
+      background: var(--primary-soft);
+      font-size: 12px;
+    }
+
+    .toolbar {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .search {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      align-items: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 0 15px;
+      border-radius: 999px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .search input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      color: var(--text);
+      background: transparent;
+      font-size: 14px;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+
+    .chips::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      flex: 0 0 auto;
+      min-height: 36px;
+      padding: 0 13px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--muted);
+      background: var(--surface);
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .chip.active {
+      color: #ffffff;
+      background: var(--primary);
+    }
+
+    .recipe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    .recipe-card {
+      overflow: hidden;
+      border: 0;
+      border-radius: var(--radius);
+      color: inherit;
+      background: var(--surface);
+      text-align: left;
+      box-shadow: var(--shadow);
+    }
+
+    .recipe-card:hover {
+      transform: translateY(-1px);
+    }
+
+    .photo,
+    .placeholder {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      background: linear-gradient(135deg, #fff4e9, #ffe4d4);
+    }
+
+    .placeholder {
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 150px;
+      color: #b85a32;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .placeholder::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 47%, #fffdf8 0 23%, transparent 24%),
+        radial-gradient(circle at 42% 43%, #e7502d 0 6%, transparent 7%),
+        radial-gradient(circle at 58% 42%, #68bc58 0 6%, transparent 7%),
+        radial-gradient(circle at 55% 59%, #f29a45 0 7%, transparent 8%),
+        radial-gradient(circle at 50% 50%, #f6ead6 0 32%, transparent 33%);
+      opacity: 0.8;
+    }
+
+    .placeholder span {
+      position: relative;
+      z-index: 1;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.86);
+    }
+
+    .card-body {
+      padding: 14px;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .recipe-name {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.3;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .tag,
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 0 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .tag {
+      color: var(--primary);
+      background: var(--primary-soft);
+    }
+
+    .pill {
+      color: #117d5b;
+      background: var(--accent-soft);
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .summary {
+      margin: 10px 0 0;
+      color: #666666;
+      font-size: 13px;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+
+    .next-note {
+      margin: 12px 0 0;
+      padding: 10px;
+      border-radius: var(--radius);
+      color: #117d5b;
+      background: var(--accent-soft);
+      font-size: 13px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .empty {
+      display: grid;
+      place-items: center;
+      min-height: 280px;
+      padding: 24px;
+      border-radius: var(--radius);
+      background: var(--surface);
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .empty h2 {
+      margin: 0 0 8px;
+      font-size: 22px;
+    }
+
+    .empty p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .detail-photo {
+      overflow: hidden;
+      margin: -24px calc(clamp(14px, 3vw, 28px) * -1) 18px;
+      border-radius: 0 0 22px 22px;
+    }
+
+    .detail-photo .photo,
+    .detail-photo .placeholder {
+      min-height: 260px;
+      aspect-ratio: 16 / 9;
+    }
+
+    .section {
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .section.accent {
+      color: #117d5b;
+      background: var(--accent-soft);
+    }
+
+    .section.warn {
+      color: #923914;
+      background: var(--primary-soft);
+    }
+
+    .section h3 {
+      margin: 0 0 12px;
+      color: var(--text);
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    .section p {
+      margin: 0;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+    }
+
+    .split-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .line-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f1f1f1;
+      font-size: 14px;
+    }
+
+    .line-item:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .line-item b,
+    .line-item small {
+      overflow-wrap: anywhere;
+    }
+
+    .line-item small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .amount {
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .steps {
+      display: grid;
+      gap: 14px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      gap: 11px;
+    }
+
+    .step-number {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      color: #ffffff;
+      background: var(--primary);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .step p {
+      margin: 3px 0 0;
+      font-size: 14px;
+      line-height: 1.62;
+    }
+
+    .step small {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .form-section {
+      padding: 16px;
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .form-section h3 {
+      margin: 0 0 12px;
+      font-size: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      color: #666666;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      outline: 0;
+      color: var(--text);
+      background: #fbfbfb;
+      font-size: 14px;
+    }
+
+    input,
+    select {
+      min-height: 42px;
+      padding: 0 11px;
+    }
+
+    textarea {
+      min-height: 82px;
+      padding: 10px 11px;
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: rgba(255, 107, 53, 0.55);
+      box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .upload {
+      display: grid;
+      gap: 10px;
+    }
+
+    .upload-preview {
+      overflow: hidden;
+      border: 1.5px dashed rgba(255, 107, 53, 0.36);
+      border-radius: var(--radius);
+      background: #ffffff;
+    }
+
+    .upload-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .file-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 0 16px;
+      border-radius: 999px;
+      color: var(--primary);
+      background: var(--primary-soft);
+      font-weight: 850;
+      overflow: hidden;
+    }
+
+    .file-btn input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .item-editor,
+    .step-editor {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 10px;
+      padding: 12px;
+      border: 1px solid #f0f0f0;
+      border-radius: var(--radius);
+      background: #fdfdfd;
+    }
+
+    .item-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.8fr) minmax(0, 0.7fr);
+      gap: 8px;
+    }
+
+    .inline-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .save-bar {
+      position: sticky;
+      bottom: 72px;
+      display: flex;
+      gap: 10px;
+      margin: 6px -2px 0;
+      padding: 12px 0 0;
+      background: linear-gradient(to top, var(--bg) 75%, rgba(248, 249, 250, 0));
+    }
+
+    .save-bar button {
+      flex: 1;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 14px;
+    }
+
+    .stat-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 18px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, rgba(255, 107, 53, 0.13), rgba(32, 201, 151, 0.12)), #ffffff;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card h3 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .stat-card p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .stat-number {
+      display: grid;
+      place-items: center;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      color: #ffffff;
+      background: var(--primary);
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-top: 1px solid #f1f1f1;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .setting-row:first-of-type {
+      border-top: 0;
+    }
+
+    .setting-row span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      right: 50%;
+      bottom: 0;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      align-items: center;
+      width: min(920px, 100%);
+      height: 72px;
+      transform: translateX(50%);
+      border-top: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav-item {
+      display: grid;
+      gap: 4px;
+      place-items: center;
+      border: 0;
+      color: var(--muted);
+      background: transparent;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    .nav-add {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      margin-top: -20px;
+      border-radius: 50%;
+      color: #ffffff;
+      background: var(--primary);
+      box-shadow: 0 12px 26px rgba(255, 107, 53, 0.32);
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 620px) {
+      .shell {
+        padding-top: 20px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .recipe-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid,
+      .item-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-photo .photo,
+      .detail-photo .placeholder {
+        min-height: 220px;
+      }
+
+      .line-item {
+        grid-template-columns: 1fr;
+      }
+
+      .amount {
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell" id="app"></main>
+  <nav class="bottom-nav" aria-label="底部导航">
+    <button class="nav-item active" data-nav="list" type="button">
+      <span>☰</span>
+      菜谱
+    </button>
+    <button class="nav-item" data-nav="new" type="button">
+      <span class="nav-add">+</span>
+      新增
+    </button>
+    <button class="nav-item" data-nav="settings" type="button">
+      <span>⚙</span>
+      我的
+    </button>
+  </nav>
+
+  <script>
+    const STORAGE_KEY = "cook_menu:v1:snapshot";
+    const CATEGORIES = [
+      ["all", "全部"],
+      ["breakfast", "早餐"],
+      ["home_cooking", "家常菜"],
+      ["quick_dish", "快手菜"],
+      ["soup_porridge", "汤粥"],
+      ["noodles", "面食"],
+      ["other", "其他"]
+    ];
+    const DIFFICULTIES = {
+      easy: "容易",
+      medium: "中等",
+      hard: "费工夫"
+    };
+    const STATUSES = {
+      regular: "常做",
+      want_to_try: "想尝试",
+      needs_improvement: "待改进"
+    };
+
+    const app = document.querySelector("#app");
+    const navButtons = Array.from(document.querySelectorAll("[data-nav]"));
+    let db = loadDatabase();
+    let route = { view: "list", id: null };
+
+    function createId(prefix) {
+      if (crypto.randomUUID) return `${prefix}-${crypto.randomUUID()}`;
+      return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+
+    function nowIso() {
+      return new Date().toISOString();
+    }
+
+    function blankDatabase() {
+      return {
+        schemaVersion: 1,
+        recipes: [],
+        appState: {
+          schemaVersion: 1,
+          selectedCategory: "all",
+          searchKeyword: "",
+          lastOpenedRecipeId: null,
+          updatedAt: nowIso()
+        }
+      };
+    }
+
+    function migrateDatabase(raw) {
+      if (!raw || raw.schemaVersion !== 1 || !Array.isArray(raw.recipes)) {
+        return blankDatabase();
+      }
+
+      return {
+        schemaVersion: 1,
+        recipes: raw.recipes.map(normalizeRecipe),
+        appState: {
+          schemaVersion: 1,
+          selectedCategory: raw.appState?.selectedCategory || "all",
+          searchKeyword: raw.appState?.searchKeyword || "",
+          lastOpenedRecipeId: raw.appState?.lastOpenedRecipeId || null,
+          updatedAt: raw.appState?.updatedAt || nowIso()
+        }
+      };
+    }
+
+    function normalizeRecipe(recipe) {
+      const stamp = nowIso();
+      return {
+        id: recipe.id || createId("recipe"),
+        name: recipe.name || "未命名菜谱",
+        image: recipe.image || null,
+        category: recipe.category || "other",
+        description: recipe.description || "",
+        difficulty: recipe.difficulty || "easy",
+        cookTimeMinutes: recipe.cookTimeMinutes ?? null,
+        servings: recipe.servings ?? null,
+        ingredients: Array.isArray(recipe.ingredients) ? recipe.ingredients : [],
+        seasonings: Array.isArray(recipe.seasonings) ? recipe.seasonings : [],
+        steps: Array.isArray(recipe.steps) ? recipe.steps.map((step, index) => ({ ...step, order: index + 1 })) : [],
+        tasteTags: Array.isArray(recipe.tasteTags) ? recipe.tasteTags : [],
+        status: recipe.status || "regular",
+        lessons: {
+          failureNotes: recipe.lessons?.failureNotes || recipe.failureNotes || "",
+          nextImprovements: recipe.lessons?.nextImprovements || recipe.nextImprovements || ""
+        },
+        notes: recipe.notes || "",
+        createdAt: recipe.createdAt || stamp,
+        updatedAt: recipe.updatedAt || stamp
+      };
+    }
+
+    function loadDatabase() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return migrateDatabase(raw ? JSON.parse(raw) : null);
+      } catch (error) {
+        console.warn("Cook_Menu storage read failed", error);
+        return blankDatabase();
+      }
+    }
+
+    function saveDatabase() {
+      db.appState.updatedAt = nowIso();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function categoryLabel(value) {
+      return CATEGORIES.find(([key]) => key === value)?.[1] || "其他";
+    }
+
+    function renderImage(image, label = "还没有成品图", className = "") {
+      if (image?.src) {
+        return `<img class="photo ${className}" src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt || "菜谱图片")}">`;
+      }
+      return `<div class="placeholder ${className}"><span>${escapeHtml(label)}</span></div>`;
+    }
+
+    function setRoute(nextRoute) {
+      route = nextRoute;
+      render();
+    }
+
+    function setNavActive(view) {
+      navButtons.forEach((button) => {
+        const target = button.dataset.nav;
+        const isActive = (view === "list" && target === "list") || (view === "settings" && target === "settings") || (view === "form" && target === "new");
+        button.classList.toggle("active", isActive);
+      });
+    }
+
+    function filteredRecipes() {
+      const selected = db.appState.selectedCategory || "all";
+      const keyword = (db.appState.searchKeyword || "").trim().toLowerCase();
+      return db.recipes
+        .filter((recipe) => selected === "all" || recipe.category === selected)
+        .filter((recipe) => {
+          if (!keyword) return true;
+          const haystack = [
+            recipe.name,
+            recipe.description,
+            recipe.notes,
+            recipe.lessons?.failureNotes,
+            recipe.lessons?.nextImprovements,
+            ...recipe.ingredients.map((item) => `${item.name} ${item.amount} ${item.unit} ${item.note}`),
+            ...recipe.seasonings.map((item) => `${item.name} ${item.amount} ${item.unit} ${item.note}`)
+          ].join(" ").toLowerCase();
+          return haystack.includes(keyword);
+        })
+        .sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
+    }
+
+    function render() {
+      setNavActive(route.view);
+      if (route.view === "detail") return renderDetail(route.id);
+      if (route.view === "form") return renderForm(route.id);
+      if (route.view === "settings") return renderSettings();
+      return renderList();
+    }
+
+    function renderList() {
+      const recipes = filteredRecipes();
+      app.innerHTML = `
+        <header class="topbar">
+          <div class="title-group">
+            <h1>我的菜谱</h1>
+            <p>记录做过的味道，下次少踩坑</p>
+          </div>
+          <button class="icon-btn" id="newRecipeTop" type="button" aria-label="新增菜谱">+</button>
+        </header>
+
+        <section class="toolbar" aria-label="搜索与分类筛选">
+          <label class="search">
+            <span>⌕</span>
+            <input id="searchInput" type="search" placeholder="搜索菜名、食材、调料" value="${escapeHtml(db.appState.searchKeyword)}">
+          </label>
+          <div class="chips">
+            ${CATEGORIES.map(([key, label]) => `<button class="chip ${db.appState.selectedCategory === key ? "active" : ""}" data-category="${key}" type="button">${label}</button>`).join("")}
+          </div>
+        </section>
+
+        ${recipes.length ? `
+          <section class="recipe-grid" aria-label="菜谱列表">
+            ${recipes.map(renderRecipeCard).join("")}
+          </section>
+        ` : renderEmptyState(db.recipes.length)}
+      `;
+
+      document.querySelector("#newRecipeTop").addEventListener("click", () => setRoute({ view: "form", id: null }));
+      document.querySelector("#searchInput").addEventListener("input", (event) => {
+        db.appState.searchKeyword = event.target.value;
+        saveDatabase();
+        renderList();
+      });
+      document.querySelectorAll("[data-category]").forEach((button) => {
+        button.addEventListener("click", () => {
+          db.appState.selectedCategory = button.dataset.category;
+          saveDatabase();
+          renderList();
+        });
+      });
+      document.querySelectorAll("[data-open-recipe]").forEach((button) => {
+        button.addEventListener("click", () => setRoute({ view: "detail", id: button.dataset.openRecipe }));
+      });
+      document.querySelector("#emptyAdd")?.addEventListener("click", () => setRoute({ view: "form", id: null }));
+    }
+
+    function renderRecipeCard(recipe) {
+      const meta = [
+        DIFFICULTIES[recipe.difficulty],
+        recipe.cookTimeMinutes ? `${recipe.cookTimeMinutes} 分钟` : "",
+        recipe.servings ? `${recipe.servings} 人份` : "",
+        STATUSES[recipe.status]
+      ].filter(Boolean);
+      const next = recipe.lessons?.nextImprovements || recipe.description || "还没有记录下次改进";
+      return `
+        <button class="recipe-card" data-open-recipe="${escapeHtml(recipe.id)}" type="button">
+          ${renderImage(recipe.image)}
+          <div class="card-body">
+            <div class="card-head">
+              <h2 class="recipe-name">${escapeHtml(recipe.name)}</h2>
+              <span class="tag">${categoryLabel(recipe.category)}</span>
+            </div>
+            <div class="meta">${meta.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>
+            ${recipe.description ? `<p class="summary">${escapeHtml(recipe.description)}</p>` : ""}
+            <p class="next-note">下次改进：${escapeHtml(next)}</p>
+          </div>
+        </button>
+      `;
+    }
+
+    function renderEmptyState(hasRecipes) {
+      const message = hasRecipes
+        ? "没找到相关菜谱，可以换个关键词，或新建一条自己的做法"
+        : "还没有菜谱，先记录一道最近做过的菜吧";
+      return `
+        <section class="empty">
+          <div>
+            <h2>${hasRecipes ? "没有匹配结果" : "还没有菜谱"}</h2>
+            <p>${message}</p>
+            <button class="primary-btn" id="emptyAdd" type="button">新增菜谱</button>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderDetail(id) {
+      const recipe = db.recipes.find((item) => item.id === id);
+      if (!recipe) {
+        setRoute({ view: "list", id: null });
+        return;
+      }
+
+      db.appState.lastOpenedRecipeId = recipe.id;
+      saveDatabase();
+
+      const meta = [
+        categoryLabel(recipe.category),
+        DIFFICULTIES[recipe.difficulty],
+        recipe.cookTimeMinutes ? `${recipe.cookTimeMinutes} 分钟` : "",
+        recipe.servings ? `${recipe.servings} 人份` : "",
+        STATUSES[recipe.status]
+      ].filter(Boolean);
+
+      app.innerHTML = `
+        <div class="detail-photo">${renderImage(recipe.image, "还没有成品图")}</div>
+        <header class="topbar">
+          <button class="icon-btn" id="backToList" type="button" aria-label="返回">‹</button>
+          <div class="title-group" style="flex:1;">
+            <h1>${escapeHtml(recipe.name)}</h1>
+            <p>${escapeHtml(recipe.description || "这道菜还没有简介。")}</p>
+          </div>
+          <button class="icon-btn" id="editRecipe" type="button" aria-label="编辑">✎</button>
+        </header>
+
+        <div class="meta">${meta.map((item) => `<span class="pill">${escapeHtml(item)}</span>`).join("")}</div>
+
+        <section class="section accent">
+          <h3>下次注意</h3>
+          <p>${escapeHtml(recipe.lessons.nextImprovements || "还没有记录下次改进。")}</p>
+        </section>
+
+        <section class="section">
+          <h3>食材</h3>
+          ${renderItems(recipe.ingredients, "还没有记录食材。")}
+        </section>
+
+        <section class="section">
+          <h3>调料</h3>
+          ${renderItems(recipe.seasonings, "还没有记录调料。")}
+        </section>
+
+        <section class="section">
+          <h3>步骤</h3>
+          ${renderSteps(recipe.steps)}
+        </section>
+
+        <section class="section warn">
+          <h3>失败经验</h3>
+          <p>${escapeHtml(recipe.lessons.failureNotes || "还没有失败记录。")}</p>
+        </section>
+
+        <section class="section">
+          <h3>其他备注</h3>
+          <p>${escapeHtml(recipe.notes || "还没有备注。")}</p>
+        </section>
+
+        <div class="actions">
+          <button class="primary-btn" id="editRecipeBottom" type="button">编辑菜谱</button>
+          <button class="danger-btn" id="deleteRecipe" type="button">删除菜谱</button>
+        </div>
+      `;
+
+      document.querySelector("#backToList").addEventListener("click", () => setRoute({ view: "list", id: null }));
+      document.querySelector("#editRecipe").addEventListener("click", () => setRoute({ view: "form", id: recipe.id }));
+      document.querySelector("#editRecipeBottom").addEventListener("click", () => setRoute({ view: "form", id: recipe.id }));
+      document.querySelector("#deleteRecipe").addEventListener("click", () => deleteRecipe(recipe.id));
+    }
+
+    function renderItems(items, emptyText) {
+      if (!items.length) return `<p>${emptyText}</p>`;
+      return `
+        <div class="split-list">
+          ${items.map((item) => `
+            <div class="line-item">
+              <div>
+                <b>${escapeHtml(item.name || "未命名")}</b>
+                ${item.note ? `<small>${escapeHtml(item.note)}</small>` : ""}
+              </div>
+              <span class="amount">${escapeHtml([item.amount, item.unit].filter(Boolean).join(" ") || "适量")}</span>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderSteps(steps) {
+      if (!steps.length) return "<p>还没有记录步骤。</p>";
+      return `
+        <div class="steps">
+          ${steps.map((step, index) => `
+            <div class="step">
+              <span class="step-number">${index + 1}</span>
+              <div>
+                <p>${escapeHtml(step.text || "未填写步骤内容")}</p>
+                ${step.timerMinutes ? `<small>计时：${escapeHtml(step.timerMinutes)} 分钟</small>` : ""}
+                ${step.note ? `<small>备注：${escapeHtml(step.note)}</small>` : ""}
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function emptyRecipe() {
+      const stamp = nowIso();
+      return {
+        id: createId("recipe"),
+        name: "",
+        image: null,
+        category: "home_cooking",
+        description: "",
+        difficulty: "easy",
+        cookTimeMinutes: null,
+        servings: null,
+        ingredients: [{ id: createId("ingredient"), name: "", amount: "", unit: "", note: "" }],
+        seasonings: [{ id: createId("seasoning"), name: "", amount: "", unit: "", note: "" }],
+        steps: [{ id: createId("step"), order: 1, text: "", image: null, timerMinutes: null, note: "" }],
+        tasteTags: [],
+        status: "regular",
+        lessons: { failureNotes: "", nextImprovements: "" },
+        notes: "",
+        createdAt: stamp,
+        updatedAt: stamp
+      };
+    }
+
+    function renderForm(id) {
+      const editing = Boolean(id);
+      const sourceRecipe = editing ? db.recipes.find((item) => item.id === id) : emptyRecipe();
+      if (!sourceRecipe) {
+        setRoute({ view: "list", id: null });
+        return;
+      }
+      const draft = structuredClone(sourceRecipe);
+
+      app.innerHTML = `
+        <header class="topbar">
+          <button class="icon-btn" id="cancelForm" type="button" aria-label="返回">‹</button>
+          <div class="title-group" style="flex:1;">
+            <h1>${editing ? "编辑菜谱" : "新增菜谱"}</h1>
+            <p>食材、调料、步骤和改进点分开记录</p>
+          </div>
+        </header>
+
+        <form class="form" id="recipeForm">
+          <section class="form-section">
+            <h3>成品图</h3>
+            <div class="upload">
+              <div class="upload-preview" id="imagePreview">${renderImage(draft.image, "添加成品图")}</div>
+              <div class="upload-actions">
+                <label class="file-btn">选择图片<input id="imageInput" type="file" accept="image/*"></label>
+                <button class="ghost-btn ${draft.image ? "" : "hidden"}" id="removeImage" type="button">移除图片</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <h3>基本信息</h3>
+            <div class="field">
+              <label for="name">菜名</label>
+              <input id="name" required maxlength="60" value="${escapeHtml(draft.name)}" placeholder="例如：番茄鸡蛋面">
+            </div>
+            <div class="field">
+              <label for="description">简短描述</label>
+              <textarea id="description" placeholder="这道菜适合什么时候做">${escapeHtml(draft.description)}</textarea>
+            </div>
+            <div class="form-grid">
+              <div class="field">
+                <label for="category">分类</label>
+                <select id="category">${CATEGORIES.filter(([key]) => key !== "all").map(([key, label]) => `<option value="${key}" ${draft.category === key ? "selected" : ""}>${label}</option>`).join("")}</select>
+              </div>
+              <div class="field">
+                <label for="difficulty">难度</label>
+                <select id="difficulty">${Object.entries(DIFFICULTIES).map(([key, label]) => `<option value="${key}" ${draft.difficulty === key ? "selected" : ""}>${label}</option>`).join("")}</select>
+              </div>
+              <div class="field">
+                <label for="status">状态</label>
+                <select id="status">${Object.entries(STATUSES).map(([key, label]) => `<option value="${key}" ${draft.status === key ? "selected" : ""}>${label}</option>`).join("")}</select>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="field">
+                <label for="cookTime">用时（分钟）</label>
+                <input id="cookTime" type="number" min="0" max="999" value="${escapeHtml(draft.cookTimeMinutes ?? "")}" placeholder="10">
+              </div>
+              <div class="field">
+                <label for="servings">份量</label>
+                <input id="servings" type="number" min="0" max="99" value="${escapeHtml(draft.servings ?? "")}" placeholder="1">
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <h3>食材</h3>
+            <div id="ingredientsEditor">${renderItemEditors(draft.ingredients, "ingredient")}</div>
+            <button class="small-btn" id="addIngredient" type="button">添加食材</button>
+          </section>
+
+          <section class="form-section">
+            <h3>调料</h3>
+            <div id="seasoningsEditor">${renderItemEditors(draft.seasonings, "seasoning")}</div>
+            <button class="small-btn" id="addSeasoning" type="button">添加调料</button>
+          </section>
+
+          <section class="form-section">
+            <h3>步骤</h3>
+            <div id="stepsEditor">${renderStepEditors(draft.steps)}</div>
+            <button class="small-btn" id="addStep" type="button">添加步骤</button>
+          </section>
+
+          <section class="form-section">
+            <h3>失败经验 / 下次改进</h3>
+            <div class="field">
+              <label for="failureNotes">失败经验</label>
+              <textarea id="failureNotes" placeholder="例如：上次盐放早了，越煮越咸">${escapeHtml(draft.lessons.failureNotes)}</textarea>
+            </div>
+            <div class="field">
+              <label for="nextImprovements">下次改进</label>
+              <textarea id="nextImprovements" placeholder="例如：最后起锅前再放盐，先尝味道">${escapeHtml(draft.lessons.nextImprovements)}</textarea>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <h3>其他备注</h3>
+            <textarea id="notes" placeholder="可选">${escapeHtml(draft.notes)}</textarea>
+          </section>
+
+          <div class="save-bar">
+            <button class="ghost-btn" id="cancelFormBottom" type="button">取消</button>
+            <button class="primary-btn" type="submit">保存菜谱</button>
+          </div>
+        </form>
+      `;
+
+      let draftImage = draft.image;
+      const refreshImagePreview = () => {
+        document.querySelector("#imagePreview").innerHTML = renderImage(draftImage, "添加成品图");
+        document.querySelector("#removeImage").classList.toggle("hidden", !draftImage);
+      };
+
+      document.querySelector("#cancelForm").addEventListener("click", () => setRoute(editing ? { view: "detail", id } : { view: "list", id: null }));
+      document.querySelector("#cancelFormBottom").addEventListener("click", () => setRoute(editing ? { view: "detail", id } : { view: "list", id: null }));
+      document.querySelector("#imageInput").addEventListener("change", async (event) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        draftImage = await readImageFile(file, draft.name || "菜谱图片");
+        refreshImagePreview();
+      });
+      document.querySelector("#removeImage").addEventListener("click", () => {
+        draftImage = null;
+        refreshImagePreview();
+      });
+      document.querySelector("#addIngredient").addEventListener("click", () => addItemEditor("ingredientsEditor", "ingredient"));
+      document.querySelector("#addSeasoning").addEventListener("click", () => addItemEditor("seasoningsEditor", "seasoning"));
+      document.querySelector("#addStep").addEventListener("click", () => addStepEditor());
+      attachRemoveHandlers();
+
+      document.querySelector("#recipeForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const recipe = readRecipeForm(sourceRecipe, draftImage);
+        if (!recipe.name.trim()) {
+          alert("请填写菜名。");
+          return;
+        }
+        if (!recipe.ingredients.length) {
+          alert("请至少填写一条食材。");
+          return;
+        }
+        if (!recipe.steps.length) {
+          alert("请至少填写一个步骤。");
+          return;
+        }
+
+        if (editing) {
+          db.recipes = db.recipes.map((item) => item.id === id ? recipe : item);
+        } else {
+          db.recipes.unshift(recipe);
+        }
+        saveDatabase();
+        setRoute({ view: "detail", id: recipe.id });
+      });
+    }
+
+    function renderItemEditors(items, type) {
+      const safeItems = items.length ? items : [{ id: createId(type), name: "", amount: "", unit: "", note: "" }];
+      return safeItems.map((item) => `
+        <div class="item-editor" data-${type}-editor>
+          <div class="item-grid">
+            <input data-field="name" placeholder="名称" value="${escapeHtml(item.name)}">
+            <input data-field="amount" placeholder="用量" value="${escapeHtml(item.amount)}">
+            <input data-field="unit" placeholder="单位" value="${escapeHtml(item.unit)}">
+          </div>
+          <input data-field="note" placeholder="备注，例如：切丝、提前焯水" value="${escapeHtml(item.note)}">
+          <div class="inline-actions">
+            <button class="small-btn" data-remove-row type="button">删除</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderStepEditors(steps) {
+      const safeSteps = steps.length ? steps : [{ id: createId("step"), order: 1, text: "", image: null, timerMinutes: null, note: "" }];
+      return safeSteps.map((step, index) => `
+        <div class="step-editor" data-step-editor>
+          <div class="step">
+            <span class="step-number">${index + 1}</span>
+            <textarea data-field="text" placeholder="步骤内容">${escapeHtml(step.text)}</textarea>
+          </div>
+          <div class="form-grid">
+            <input data-field="timerMinutes" type="number" min="0" max="999" placeholder="计时分钟，可选" value="${escapeHtml(step.timerMinutes ?? "")}">
+            <input data-field="note" placeholder="步骤备注，可选" value="${escapeHtml(step.note)}">
+          </div>
+          <div class="inline-actions">
+            <button class="small-btn" data-remove-row type="button">删除</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function addItemEditor(containerId, type) {
+      const container = document.querySelector(`#${containerId}`);
+      container.insertAdjacentHTML("beforeend", renderItemEditors([{ id: createId(type), name: "", amount: "", unit: "", note: "" }], type));
+      attachRemoveHandlers();
+    }
+
+    function addStepEditor() {
+      const container = document.querySelector("#stepsEditor");
+      container.insertAdjacentHTML("beforeend", renderStepEditors([{ id: createId("step"), order: 1, text: "", image: null, timerMinutes: null, note: "" }]));
+      refreshStepNumbers();
+      attachRemoveHandlers();
+    }
+
+    function attachRemoveHandlers() {
+      document.querySelectorAll("[data-remove-row]").forEach((button) => {
+        button.onclick = () => {
+          const block = button.closest(".item-editor, .step-editor");
+          const container = block.parentElement;
+          if (container.children.length === 1) {
+            block.querySelectorAll("input, textarea").forEach((input) => input.value = "");
+          } else {
+            block.remove();
+          }
+          refreshStepNumbers();
+        };
+      });
+    }
+
+    function refreshStepNumbers() {
+      document.querySelectorAll("#stepsEditor .step-number").forEach((item, index) => {
+        item.textContent = index + 1;
+      });
+    }
+
+    function readItemEditors(selector) {
+      return Array.from(document.querySelectorAll(selector)).map((block) => {
+        const read = (field) => block.querySelector(`[data-field="${field}"]`)?.value.trim() || "";
+        return {
+          id: createId(selector.includes("ingredient") ? "ingredient" : "seasoning"),
+          name: read("name"),
+          amount: read("amount"),
+          unit: read("unit"),
+          note: read("note")
+        };
+      }).filter((item) => item.name || item.amount || item.unit || item.note);
+    }
+
+    function readStepEditors() {
+      return Array.from(document.querySelectorAll("[data-step-editor]")).map((block, index) => {
+        const read = (field) => block.querySelector(`[data-field="${field}"]`)?.value.trim() || "";
+        const timer = read("timerMinutes");
+        return {
+          id: createId("step"),
+          order: index + 1,
+          text: read("text"),
+          image: null,
+          timerMinutes: timer ? Number(timer) : null,
+          note: read("note")
+        };
+      }).filter((step) => step.text || step.note || step.timerMinutes);
+    }
+
+    function readRecipeForm(sourceRecipe, image) {
+      const stamp = nowIso();
+      const read = (id) => document.querySelector(`#${id}`).value.trim();
+      const numberOrNull = (id) => {
+        const value = read(id);
+        return value ? Number(value) : null;
+      };
+      return {
+        ...sourceRecipe,
+        name: read("name"),
+        image,
+        category: read("category"),
+        description: read("description"),
+        difficulty: read("difficulty"),
+        cookTimeMinutes: numberOrNull("cookTime"),
+        servings: numberOrNull("servings"),
+        ingredients: readItemEditors("[data-ingredient-editor]"),
+        seasonings: readItemEditors("[data-seasoning-editor]"),
+        steps: readStepEditors(),
+        status: read("status"),
+        lessons: {
+          failureNotes: read("failureNotes"),
+          nextImprovements: read("nextImprovements")
+        },
+        notes: read("notes"),
+        updatedAt: stamp
+      };
+    }
+
+    function readImageFile(file, alt) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve({
+          id: createId("image"),
+          storageType: "base64",
+          src: reader.result,
+          alt: `${alt || file.name} 成品图`,
+          createdAt: nowIso()
+        });
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function deleteRecipe(id) {
+      const recipe = db.recipes.find((item) => item.id === id);
+      if (!recipe) return;
+      if (!confirm(`确定删除「${recipe.name}」吗？删除后当前本地数据里不会保留这条菜谱。`)) return;
+      db.recipes = db.recipes.filter((item) => item.id !== id);
+      saveDatabase();
+      setRoute({ view: "list", id: null });
+    }
+
+    function renderSettings() {
+      const lastRecipe = db.recipes.slice().sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)))[0];
+      app.innerHTML = `
+        <header class="topbar">
+          <div class="title-group">
+            <h1>我的</h1>
+            <p>本地保存，只服务自己的厨房记录</p>
+          </div>
+        </header>
+
+        <section class="stat-card">
+          <div>
+            <h3>已记录 ${db.recipes.length} 道菜</h3>
+            <p>最近更新：${escapeHtml(lastRecipe?.name || "暂无菜谱")}</p>
+          </div>
+          <div class="stat-number">${db.recipes.length}</div>
+        </section>
+
+        <section class="settings-grid">
+          <div class="section">
+            <h3>数据管理</h3>
+            <div class="setting-row">存储位置 <span>localStorage</span></div>
+            <div class="setting-row">存储键 <span>${STORAGE_KEY}</span></div>
+            <div class="setting-row">刷新保留 <span>已开启</span></div>
+          </div>
+
+          <div class="section">
+            <h3>分类与筛选</h3>
+            <div class="setting-row">预设分类 <span>早餐、家常菜、快手菜、汤粥、面食、其他</span></div>
+            <div class="setting-row">当前筛选 <span>${categoryLabel(db.appState.selectedCategory)}</span></div>
+            <div class="setting-row">默认排序 <span>最近更新</span></div>
+          </div>
+
+          <div class="section">
+            <h3>个人版范围</h3>
+            <p>第一版只做自己的菜谱记录、本地保存、分类检索和复做提醒，暂不包含互动或公开发布功能。</p>
+          </div>
+
+          <div class="section">
+            <h3>本地数据操作</h3>
+            <div class="actions">
+              <button class="ghost-btn" id="exportData" type="button">导出 JSON</button>
+              <label class="file-btn">导入 JSON<input id="importData" type="file" accept="application/json,.json"></label>
+              <button class="danger-btn" id="clearData" type="button">清空数据</button>
+            </div>
+          </div>
+        </section>
+      `;
+
+      document.querySelector("#exportData").addEventListener("click", exportData);
+      document.querySelector("#importData").addEventListener("change", importData);
+      document.querySelector("#clearData").addEventListener("click", clearData);
+    }
+
+    function exportData() {
+      const blob = new Blob([JSON.stringify(db, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `cook-menu-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importData(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          db = migrateDatabase(JSON.parse(reader.result));
+          saveDatabase();
+          setRoute({ view: "list", id: null });
+        } catch (error) {
+          alert("导入失败，请确认是 Cook_Menu 导出的 JSON 文件。");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function clearData() {
+      if (!confirm("确定清空全部本地菜谱吗？这个操作会删除当前浏览器里的 Cook_Menu 数据。")) return;
+      db = { ...blankDatabase(), recipes: [] };
+      saveDatabase();
+      setRoute({ view: "list", id: null });
+    }
+
+    navButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const target = button.dataset.nav;
+        if (target === "new") return setRoute({ view: "form", id: null });
+        if (target === "settings") return setRoute({ view: "settings", id: null });
+        setRoute({ view: "list", id: null });
+      });
+    });
+
+    saveDatabase();
+    render();
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch((error) => {
+          console.warn("Cook_Menu service worker registration failed", error);
+        });
+      });
+    }
+  </script>
+</body>
+</html>

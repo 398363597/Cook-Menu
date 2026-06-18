@@ -1,0 +1,1101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cook_Menu Personal Recipe UI</title>
+  <style>
+    :root {
+      --primary: #ff6b35;
+      --primary-soft: #fff0ea;
+      --accent: #20c997;
+      --accent-soft: #e9fbf5;
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --text: #333333;
+      --muted: #888888;
+      --line: #eeeeee;
+      --shadow: 0 18px 55px rgba(51, 51, 51, 0.09);
+      --radius: 8px;
+      font-family: "PingFang SC", "Microsoft YaHei", "Source Han Sans SC", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(255, 107, 53, 0.11), transparent 30%),
+        linear-gradient(135deg, #ffffff 0%, #f8f9fa 56%, #f4fbf8 100%);
+    }
+
+    .page {
+      max-width: 1510px;
+      margin: 0 auto;
+      padding: 44px 34px 56px;
+    }
+
+    .hero {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 28px;
+      margin-bottom: 34px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 0;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 14px 0 0;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    .scope-note {
+      width: min(430px, 100%);
+      padding: 18px;
+      border: 1px solid rgba(255, 107, 53, 0.18);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.84);
+      box-shadow: 0 10px 30px rgba(255, 107, 53, 0.08);
+    }
+
+    .scope-note strong {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+
+    .scope-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .scope-grid span {
+      padding: 7px 10px;
+      border-radius: 999px;
+      color: #a9431f;
+      background: var(--primary-soft);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .screens {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(280px, 1fr));
+      gap: 26px;
+      align-items: start;
+    }
+
+    .screen-block {
+      min-width: 0;
+    }
+
+    .screen-title {
+      margin: 0 0 12px;
+      font-size: 15px;
+      color: #555555;
+      font-weight: 750;
+    }
+
+    .phone {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      max-width: 356px;
+      min-height: 752px;
+      margin: 0 auto;
+      border: 10px solid #242424;
+      border-radius: 34px;
+      background: var(--bg);
+      box-shadow: var(--shadow);
+    }
+
+    .phone::before {
+      content: "";
+      position: absolute;
+      z-index: 20;
+      top: 10px;
+      left: 50%;
+      width: 92px;
+      height: 24px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: #242424;
+    }
+
+    .app {
+      min-height: 732px;
+      padding: 38px 18px 82px;
+      background: var(--bg);
+    }
+
+    .app.white {
+      background: var(--surface);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .title-group h2 {
+      margin: 0;
+      font-size: 23px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .title-group p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .icon-btn,
+    .back-btn {
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--text);
+      background: var(--surface);
+      box-shadow: 0 8px 20px rgba(51, 51, 51, 0.06);
+    }
+
+    .primary-btn {
+      border: 0;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #ffffff;
+      font-weight: 800;
+      box-shadow: 0 12px 24px rgba(255, 107, 53, 0.28);
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 46px;
+      margin-bottom: 14px;
+      padding: 0 15px;
+      border-radius: 999px;
+      color: var(--muted);
+      background: var(--surface);
+      font-size: 13px;
+      box-shadow: 0 8px 24px rgba(51, 51, 51, 0.05);
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      overflow: hidden;
+      margin: 0 -18px 18px 0;
+      padding-right: 18px;
+    }
+
+    .chip {
+      flex: 0 0 auto;
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: var(--muted);
+      background: var(--surface);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .chip.active {
+      color: #ffffff;
+      background: var(--primary);
+    }
+
+    .recipe-card {
+      overflow: hidden;
+      margin-bottom: 14px;
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 12px 30px rgba(51, 51, 51, 0.07);
+    }
+
+    .recipe-card.compact {
+      display: grid;
+      grid-template-columns: 108px 1fr;
+      min-height: 116px;
+    }
+
+    .food-photo {
+      position: relative;
+      min-height: 150px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #fff4e9, #ffe4d4);
+    }
+
+    .food-photo.small {
+      min-height: 116px;
+    }
+
+    .food-photo.detail {
+      min-height: 210px;
+      border-radius: 0 0 22px 22px;
+    }
+
+    .food-photo::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 48%, #fffdf8 0 23%, transparent 24%),
+        radial-gradient(circle at 47% 47%, #f4d14b 0 7%, transparent 8%),
+        radial-gradient(circle at 38% 42%, #e7502d 0 6%, transparent 7%),
+        radial-gradient(circle at 58% 41%, #68bc58 0 5%, transparent 6%),
+        radial-gradient(circle at 62% 57%, #f29a45 0 7%, transparent 8%),
+        radial-gradient(circle at 42% 59%, #a7653d 0 5%, transparent 6%),
+        radial-gradient(circle at 50% 50%, #f6ead6 0 32%, transparent 33%),
+        linear-gradient(140deg, rgba(255, 255, 255, 0.5), transparent);
+    }
+
+    .food-photo::after {
+      content: "";
+      position: absolute;
+      right: -28px;
+      bottom: -44px;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 22px solid rgba(255, 255, 255, 0.56);
+    }
+
+    .food-photo.green {
+      background: linear-gradient(135deg, #ebfbf4, #daf4e8);
+    }
+
+    .food-photo.green::before {
+      background:
+        radial-gradient(circle at 50% 48%, #fffdf8 0 23%, transparent 24%),
+        radial-gradient(circle at 44% 43%, #57b657 0 8%, transparent 9%),
+        radial-gradient(circle at 58% 44%, #2f9865 0 7%, transparent 8%),
+        radial-gradient(circle at 43% 58%, #f3c34b 0 6%, transparent 7%),
+        radial-gradient(circle at 59% 59%, #e76039 0 6%, transparent 7%),
+        radial-gradient(circle at 50% 50%, #f6ead6 0 32%, transparent 33%),
+        linear-gradient(140deg, rgba(255, 255, 255, 0.5), transparent);
+    }
+
+    .card-body {
+      padding: 14px;
+    }
+
+    .recipe-card.compact .card-body {
+      padding: 12px 12px 10px;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .recipe-name {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .tag {
+      padding: 5px 8px;
+      border-radius: 999px;
+      color: var(--primary);
+      background: var(--primary-soft);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .tag.green {
+      color: #117d5b;
+      background: var(--accent-soft);
+    }
+
+    .next-note {
+      margin: 11px 0 0;
+      padding: 9px 10px;
+      border-radius: var(--radius);
+      color: #117d5b;
+      background: var(--accent-soft);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      align-items: center;
+      height: 72px;
+      padding: 8px 16px 12px;
+      border-top: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav-item {
+      display: grid;
+      gap: 4px;
+      place-items: center;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    .nav-add {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      margin-top: -22px;
+      border-radius: 50%;
+      color: #ffffff;
+      background: var(--primary);
+      box-shadow: 0 12px 26px rgba(255, 107, 53, 0.32);
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .detail-head {
+      position: relative;
+      margin: -38px -18px 18px;
+    }
+
+    .detail-actions {
+      position: absolute;
+      z-index: 3;
+      top: 44px;
+      right: 18px;
+      left: 18px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .detail-actions .back-btn,
+    .detail-actions .icon-btn {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .detail-title {
+      padding: 0 2px 4px;
+    }
+
+    .detail-title h2 {
+      margin: 0 0 9px;
+      font-size: 25px;
+      line-height: 1.2;
+    }
+
+    .section {
+      margin-top: 14px;
+      padding: 15px;
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 10px 24px rgba(51, 51, 51, 0.05);
+    }
+
+    .section h3 {
+      margin: 0 0 12px;
+      font-size: 15px;
+      letter-spacing: 0;
+    }
+
+    .split-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .line-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      padding-bottom: 9px;
+      border-bottom: 1px solid #f1f1f1;
+      font-size: 13px;
+    }
+
+    .line-item:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .line-item b {
+      font-size: 13px;
+    }
+
+    .line-item small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .amount {
+      color: var(--text);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .steps {
+      display: grid;
+      gap: 13px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+    }
+
+    .step-number {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      color: #ffffff;
+      background: var(--primary);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .step p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .step small {
+      display: inline-block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .warning-card {
+      padding: 13px;
+      border-radius: var(--radius);
+      background: var(--primary-soft);
+      color: #923914;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .form-section {
+      margin-bottom: 12px;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 10px 24px rgba(51, 51, 51, 0.05);
+    }
+
+    .form-section h3 {
+      margin: 0 0 12px;
+      font-size: 14px;
+    }
+
+    .upload {
+      display: grid;
+      place-items: center;
+      height: 132px;
+      margin-bottom: 12px;
+      border: 1.5px dashed rgba(255, 107, 53, 0.36);
+      border-radius: var(--radius);
+      color: var(--primary);
+      background:
+        linear-gradient(135deg, rgba(255, 107, 53, 0.08), rgba(32, 201, 151, 0.07)),
+        #ffffff;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .field {
+      margin-bottom: 10px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .input,
+    .textarea {
+      width: 100%;
+      border: 1px solid #eeeeee;
+      border-radius: var(--radius);
+      background: #fbfbfb;
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+    }
+
+    .input {
+      height: 38px;
+      padding: 0 11px;
+    }
+
+    .textarea {
+      min-height: 64px;
+      padding: 10px 11px;
+      resize: none;
+      line-height: 1.5;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 78px 58px;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .add-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 36px;
+      border: 1px dashed rgba(255, 107, 53, 0.34);
+      border-radius: var(--radius);
+      color: var(--primary);
+      background: #fffaf8;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .save-bar {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      padding: 12px 18px 18px;
+      border-top: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+    }
+
+    .save-bar button {
+      width: 100%;
+      height: 46px;
+      font-size: 15px;
+    }
+
+    .settings-card {
+      margin-bottom: 12px;
+      padding: 15px;
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 10px 24px rgba(51, 51, 51, 0.05);
+    }
+
+    .stat-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding: 18px;
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, rgba(255, 107, 53, 0.13), rgba(32, 201, 151, 0.12)),
+        #ffffff;
+      box-shadow: 0 12px 30px rgba(51, 51, 51, 0.06);
+    }
+
+    .stat-card h3 {
+      margin: 0;
+      font-size: 21px;
+    }
+
+    .stat-card p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .stat-number {
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      color: #ffffff;
+      background: var(--primary);
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .settings-card h3 {
+      margin: 0 0 10px;
+      font-size: 14px;
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 11px 0;
+      border-top: 1px solid #f1f1f1;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .setting-row:first-of-type {
+      border-top: 0;
+    }
+
+    .setting-row span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .removed {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .removed span {
+      padding: 6px 8px;
+      border-radius: 999px;
+      color: #777777;
+      background: #f1f1f1;
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .icon {
+      width: 19px;
+      height: 19px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.1;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    @media (max-width: 1240px) {
+      .screens {
+        grid-template-columns: repeat(2, minmax(280px, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        padding: 28px 16px 40px;
+      }
+
+      .hero {
+        display: block;
+      }
+
+      .scope-note {
+        margin-top: 18px;
+      }
+
+      .screens {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Cook_Menu Personal MVP</p>
+        <h1>个人菜谱本 UI 视觉稿</h1>
+        <p>第一版聚焦“记录自己的做法、下次复做更稳”。界面以手机 App 画布展示菜谱列表、详情、新增编辑和我的设置，食材与调料独立分区，失败经验和下次改进作为核心信息出现。</p>
+      </div>
+      <aside class="scope-note">
+        <strong>个人版边界：不做社区</strong>
+        <div class="scope-grid">
+          <span>无关注</span>
+          <span>无粉丝</span>
+          <span>无获赞</span>
+          <span>无厨友动态</span>
+          <span>无点赞数</span>
+          <span>无评论</span>
+          <span>无发布到社区</span>
+        </div>
+      </aside>
+    </header>
+
+    <section class="screens" aria-label="Cook_Menu phone screens">
+      <article class="screen-block">
+        <h2 class="screen-title">1. 菜谱列表页</h2>
+        <div class="phone">
+          <div class="app">
+            <div class="topbar">
+              <div class="title-group">
+                <h2>我的菜谱</h2>
+                <p>记录做过的味道，下次少踩坑</p>
+              </div>
+              <button class="icon-btn" aria-label="新增菜谱">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+            </div>
+
+            <div class="search">
+              <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg>
+              搜索菜名、备注或改进点
+            </div>
+
+            <div class="chips">
+              <span class="chip active">全部</span>
+              <span class="chip">早餐</span>
+              <span class="chip">家常菜</span>
+              <span class="chip">快手菜</span>
+              <span class="chip">汤粥</span>
+              <span class="chip">面食</span>
+            </div>
+
+            <div class="recipe-card">
+              <div class="food-photo"></div>
+              <div class="card-body">
+                <div class="row">
+                  <h3 class="recipe-name">番茄鸡蛋面</h3>
+                  <span class="tag">面食</span>
+                </div>
+                <div class="meta">
+                  <span>10 分钟</span>
+                  <span>容易</span>
+                  <span>1 人份</span>
+                </div>
+                <p class="next-note">下次改进：最后起锅前再放盐，先尝味道。</p>
+              </div>
+            </div>
+
+            <div class="recipe-card compact">
+              <div class="food-photo small green"></div>
+              <div class="card-body">
+                <div class="row">
+                  <h3 class="recipe-name">西兰花炒鸡胸</h3>
+                  <span class="tag green">常做</span>
+                </div>
+                <div class="meta">
+                  <span>家常菜</span>
+                  <span>18 分钟</span>
+                </div>
+                <p class="next-note">鸡胸肉切薄，腌 10 分钟再下锅。</p>
+              </div>
+            </div>
+
+            <div class="recipe-card compact">
+              <div class="food-photo small"></div>
+              <div class="card-body">
+                <div class="row">
+                  <h3 class="recipe-name">南瓜小米粥</h3>
+                  <span class="tag">汤粥</span>
+                </div>
+                <div class="meta">
+                  <span>35 分钟</span>
+                  <span>温和</span>
+                </div>
+                <p class="next-note">南瓜晚点放，口感更清楚。</p>
+              </div>
+            </div>
+
+            <nav class="bottom-nav" aria-label="底部导航">
+              <div class="nav-item active">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg>
+                菜谱
+              </div>
+              <div class="nav-item">
+                <div class="nav-add">+</div>
+                新增
+              </div>
+              <div class="nav-item">
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 3.1a7 7 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.5A7 7 0 0 0 5 12a7 7 0 0 0 .1 1l-2 1.5 2 3.4 2.4-1a7 7 0 0 0 1.7 1l.3 3.1h5l.3-3.1a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.5c.1-.3.1-.7.1-1z"/></svg>
+                我的
+              </div>
+            </nav>
+          </div>
+        </div>
+      </article>
+
+      <article class="screen-block">
+        <h2 class="screen-title">2. 菜谱详情页</h2>
+        <div class="phone">
+          <div class="app white">
+            <div class="detail-head">
+              <div class="detail-actions">
+                <button class="back-btn" aria-label="返回">
+                  <svg class="icon" viewBox="0 0 24 24"><path d="M15 18 9 12l6-6"/></svg>
+                </button>
+                <button class="icon-btn" aria-label="编辑">
+                  <svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                </button>
+              </div>
+              <div class="food-photo detail"></div>
+            </div>
+
+            <div class="detail-title">
+              <h2>番茄鸡蛋面</h2>
+              <div class="meta">
+                <span class="tag">面食</span>
+                <span>10 分钟</span>
+                <span>容易</span>
+                <span>1 人份</span>
+              </div>
+            </div>
+
+            <div class="section" style="background: var(--accent-soft);">
+              <h3>下次注意</h3>
+              <p style="margin:0;color:#117d5b;font-size:13px;line-height:1.55;">最后起锅前再放盐，先尝味道；番茄多炒一会儿，汤会更浓。</p>
+            </div>
+
+            <div class="section">
+              <h3>食材</h3>
+              <div class="split-list">
+                <div class="line-item"><div><b>面条</b><small>按一人份准备</small></div><span class="amount">1 人份</span></div>
+                <div class="line-item"><div><b>番茄</b><small>切小块</small></div><span class="amount">1 个</span></div>
+                <div class="line-item"><div><b>鸡蛋</b><small>提前打散</small></div><span class="amount">2 个</span></div>
+              </div>
+            </div>
+
+            <div class="section">
+              <h3>调料</h3>
+              <div class="split-list">
+                <div class="line-item"><div><b>盐</b><small>最后再调味</small></div><span class="amount">少许</span></div>
+                <div class="line-item"><div><b>生抽</b></div><span class="amount">1 勺</span></div>
+              </div>
+            </div>
+
+            <div class="section">
+              <h3>步骤</h3>
+              <div class="steps">
+                <div class="step"><span class="step-number">1</span><div><p>热锅倒油，先炒鸡蛋，凝固后盛出。</p><small>备注：不要炒太老</small></div></div>
+                <div class="step"><span class="step-number">2</span><div><p>番茄炒出汁，加水煮开。</p><small>计时：3 分钟</small></div></div>
+                <div class="step"><span class="step-number">3</span><div><p>放入面条，快熟时加入鸡蛋、盐和生抽。</p></div></div>
+              </div>
+            </div>
+
+            <div class="section">
+              <h3>失败经验</h3>
+              <div class="warning-card">上次盐放早了，汤越煮越咸；鸡蛋炒太久会偏老。</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="screen-block">
+        <h2 class="screen-title">3. 新增 / 编辑菜谱页</h2>
+        <div class="phone">
+          <div class="app">
+            <div class="topbar">
+              <button class="back-btn" aria-label="返回">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M15 18 9 12l6-6"/></svg>
+              </button>
+              <div class="title-group" style="flex:1;">
+                <h2>编辑菜谱</h2>
+                <p>把自己的做法记录清楚</p>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <div class="upload">
+                <div>
+                  <svg class="icon" viewBox="0 0 24 24" style="width:30px;height:30px;margin-bottom:8px;"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="m21 15-5-5L5 19"/></svg>
+                  <div>添加一张成品图</div>
+                </div>
+              </div>
+              <div class="field">
+                <label>菜名</label>
+                <div class="input">番茄鸡蛋面</div>
+              </div>
+              <div class="chips" style="margin:0;">
+                <span class="chip">早餐</span>
+                <span class="chip">家常菜</span>
+                <span class="chip active">面食</span>
+                <span class="chip">其他</span>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>食材</h3>
+              <div class="field-grid">
+                <div class="input">番茄</div>
+                <div class="input">1</div>
+                <div class="input">个</div>
+              </div>
+              <div class="textarea" style="min-height:38px;">切小块</div>
+              <button class="add-row">+ 添加食材</button>
+            </div>
+
+            <div class="form-section">
+              <h3>调料</h3>
+              <div class="field-grid">
+                <div class="input">生抽</div>
+                <div class="input">1</div>
+                <div class="input">勺</div>
+              </div>
+              <button class="add-row">+ 添加调料</button>
+            </div>
+
+            <div class="form-section">
+              <h3>步骤</h3>
+              <div class="step">
+                <span class="step-number">1</span>
+                <div class="textarea">热锅倒油，先炒鸡蛋，凝固后盛出。</div>
+              </div>
+              <div style="height:10px;"></div>
+              <div class="step">
+                <span class="step-number">2</span>
+                <div class="textarea">番茄炒出汁后加水煮开。</div>
+              </div>
+              <button class="add-row" style="margin-top:10px;">+ 添加步骤</button>
+            </div>
+
+            <div class="form-section">
+              <h3>失败经验 / 下次改进</h3>
+              <div class="field">
+                <label>失败经验</label>
+                <div class="textarea">上次盐放早了，汤越煮越咸。</div>
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label>下次改进</label>
+                <div class="textarea">最后起锅前再放盐，先尝味道。</div>
+              </div>
+            </div>
+
+            <div class="save-bar">
+              <button class="primary-btn">保存菜谱</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="screen-block">
+        <h2 class="screen-title">4. 我的 / 设置页</h2>
+        <div class="phone">
+          <div class="app">
+            <div class="topbar">
+              <div class="title-group">
+                <h2>我的</h2>
+                <p>本地保存，只服务自己的厨房</p>
+              </div>
+              <button class="icon-btn" aria-label="设置">
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 3.1a7 7 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.5A7 7 0 0 0 5 12a7 7 0 0 0 .1 1l-2 1.5 2 3.4 2.4-1a7 7 0 0 0 1.7 1l.3 3.1h5l.3-3.1a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.5c.1-.3.1-.7.1-1z"/></svg>
+              </button>
+            </div>
+
+            <div class="stat-card">
+              <div>
+                <h3>已记录 24 道菜</h3>
+                <p>最近更新：番茄鸡蛋面</p>
+              </div>
+              <div class="stat-number">24</div>
+            </div>
+
+            <div class="settings-card">
+              <h3>数据管理</h3>
+              <div class="setting-row">导出本地数据 <span>JSON</span></div>
+              <div class="setting-row">导入本地数据 <span>备份恢复</span></div>
+              <div class="setting-row">清空全部数据 <span>需确认</span></div>
+            </div>
+
+            <div class="settings-card">
+              <h3>分类与筛选</h3>
+              <div class="setting-row">分类管理 <span>早餐、家常菜、快手菜</span></div>
+              <div class="setting-row">默认筛选 <span>全部</span></div>
+              <div class="setting-row">默认排序 <span>最近更新</span></div>
+            </div>
+
+            <div class="settings-card">
+              <h3>个人版范围</h3>
+              <p style="margin:0;color:var(--muted);font-size:12px;line-height:1.6;">第一版只做自己的菜谱记录、本地存储和复做提醒。</p>
+              <div class="removed">
+                <span>不含关注</span>
+                <span>不含粉丝</span>
+                <span>不含获赞</span>
+                <span>不含动态</span>
+                <span>不含点赞数</span>
+                <span>不含评论</span>
+                <span>不发布社区</span>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <h3>第二版候选</h3>
+              <div class="setting-row">购物清单 <span>稍后支持</span></div>
+              <div class="setting-row">复做日志 <span>稍后支持</span></div>
+            </div>
+
+            <nav class="bottom-nav" aria-label="底部导航">
+              <div class="nav-item">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg>
+                菜谱
+              </div>
+              <div class="nav-item">
+                <div class="nav-add">+</div>
+                新增
+              </div>
+              <div class="nav-item active">
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 3.1a7 7 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.5A7 7 0 0 0 5 12a7 7 0 0 0 .1 1l-2 1.5 2 3.4 2.4-1a7 7 0 0 0 1.7 1l.3 3.1h5l.3-3.1a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.5c.1-.3.1-.7.1-1z"/></svg>
+                我的
+              </div>
+            </nav>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
