@@ -11,6 +11,13 @@
 - `assets/icons/icon-maskable-512.png`
 - `index.html` 已接入 manifest、theme color、图标和 service worker 注册
 
+正式发布地址：
+
+- GitHub 仓库：`https://github.com/398363597/Cook-Menu`
+- PWA 地址：`https://398363597.github.io/Cook-Menu/`
+- 发布分支：`main`
+- 首个稳定标签：`v1.0.0`
+
 ## 本地预览
 
 在项目目录运行：
@@ -29,23 +36,16 @@ http://127.0.0.1:8767/
 
 ## 部署到安卓手机
 
-推荐部署到 HTTPS 静态托管平台：
-
-- GitHub Pages
-- Cloudflare Pages
-- Netlify
-- Vercel
-
-部署后，在安卓 Chrome 中打开 HTTPS 地址：
+在安卓 Chrome 中打开：
 
 ```text
-https://你的域名/
+https://398363597.github.io/Cook-Menu/
 ```
 
 然后：
 
 ```text
-右上角菜单 -> 添加到主屏幕 -> 确认
+右上角菜单 -> 安装应用（或“添加到主屏幕”）-> 安装
 ```
 
 安装后，Cook_Menu 会像普通 App 一样出现在桌面。
