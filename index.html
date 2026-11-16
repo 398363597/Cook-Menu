@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Cook_Menu</title>
-  <meta name="theme-color" content="#FF6B35">
+  <meta name="theme-color" content="#f5f2e9">
   <meta name="description" content="个人自用菜谱本，记录食材、调料、步骤和下次改进。">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png">
@@ -749,6 +749,83 @@
         white-space: normal;
       }
     }
+    /* Ink-and-paper treatment; the illustration is part of the offline shell. */
+    :root {
+      --primary: #b94d35; --primary-soft: #f6e6dc;
+      --accent: #607d70; --accent-soft: #eaf0e9;
+      --bg: #f5f2e9; --surface: #fffdf8; --text: #302a25;
+      --muted: #746a60; --line: #e1d9cc; --danger: #a84232;
+      --danger-soft: #f8e9e2; --shadow: 0 3px 12px rgba(70, 55, 42, .06);
+    }
+    body { background: #e9ece5; }
+    .shell { background: var(--bg); padding-top: 0; }
+    .topbar {
+      min-height: 135px; align-items: center; margin: 0 calc(clamp(14px, 3vw, 28px) * -1) 16px;
+      padding: 20px clamp(14px, 3vw, 28px);
+      background: var(--bg) url('assets/ink-header.jpg') center 51% / cover no-repeat;
+    }
+    .title-group h1, .title-group h2, .recipe-name, .section h3, .form-section h3, .empty h2 {
+      font-family: "STKaiti", "KaiTi", "Songti SC", "Noto Serif SC", serif;
+      font-weight: 700;
+    }
+    .title-group h1, .title-group h2 { font-size: 30px; }
+    .title-group h1::after { content: "食"; display: inline-block; vertical-align: middle; margin-left: 8px; padding: 3px 2px; border: 1px solid #a83e2d; border-radius: 2px; color: #a83e2d; font: 12px serif; }
+    .title-group p { color: #625b50; }
+    .icon-btn, .ghost-btn { box-shadow: none; border: 1px solid var(--line); background: rgba(255,253,248,.92); }
+    .primary-btn { box-shadow: none; }
+    .search { border: 1px solid #cdbfac; box-shadow: none; background: #fffdf8; }
+    .search input { font-size: 16px; }
+    .chips { gap: 8px; padding: 3px 0 8px; }
+    .chip { min-height: 48px; padding: 0 17px; border: 1px solid #e5ddd0; border-radius: 8px; color: #51493f; background: #f1ece2; font-size: 14px; }
+    .chip.active { background: var(--primary); border-color: var(--primary); }
+    .recipe-grid { grid-template-columns: 1fr; gap: 12px; }
+    .recipe-card { display: grid; grid-template-columns: minmax(120px, 38%) minmax(0, 1fr); min-height: 150px; padding: 0; border: 1px solid var(--line); }
+    .recipe-card .photo, .recipe-card .placeholder { height: 100%; min-height: 150px; aspect-ratio: auto; }
+    .placeholder { color: #6d7462; background: #e7ece3; }
+    .placeholder::before { background: none; }
+    .placeholder span { background: transparent; }
+    .card-body { min-width: 0; padding: 16px; }
+    .card-head { flex-wrap: wrap; }
+    .recipe-name { font-size: 22px; }
+    .tag { color: #a14734; background: #f8e9e0; }
+    .pill { color: #536d5f; background: #eaf0e9; }
+    .meta { font-size: 13px; font-weight: 500; }
+    .summary { color: #625a50; }
+    .next-note { margin-top: 10px; padding: 0; color: #6b7768; background: transparent; }
+    .empty { border: 1px solid var(--line); box-shadow: none; }
+    .detail-photo { margin: 0 0 15px; border-radius: 8px; }
+    .detail-photo .photo, .detail-photo .placeholder { display: block; min-height: 200px; max-height: 390px; }
+    .detail-photo .placeholder { display: grid; }
+    .section, .form-section { border: 1px solid var(--line); box-shadow: none; background: rgba(255,253,248,.76); }
+    .section h3, .form-section h3 { font-size: 19px; }
+    .section h3::before, .form-section h3::before { content: ""; display: inline-block; width: 4px; height: 17px; margin-right: 9px; vertical-align: -2px; background: var(--primary); }
+    .section.accent { color: #425d50; background: #eaf0e9; }
+    .section.warn { color: #754235; background: #f8eae2; }
+    .line-item { border-color: var(--line); }
+    .form-section label { color: #645b51; font-size: 13px; }
+    input, textarea, select { background: #fffefa; border-color: #d9d0c3; font-size: 16px; }
+    input:focus, textarea:focus, select:focus { border-color: #b94d35; box-shadow: 0 0 0 3px rgba(185,77,53,.12); }
+    .upload { grid-template-columns: minmax(120px, 220px) 1fr; align-items: center; }
+    .upload-preview { border-color: #c9b7a3; }
+    .upload-preview .photo, .upload-preview .placeholder { min-height: 120px; aspect-ratio: 4 / 3; }
+    .item-editor, .step-editor { background: #fbf9f3; border-color: #ece4d9; }
+    .save-bar { bottom: calc(72px + env(safe-area-inset-bottom)); background: var(--bg); }
+    .bottom-nav { height: calc(72px + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom); background: rgba(255,253,248,.97); }
+    .nav-add { box-shadow: none; }
+    .stat-card { background: #eaf0e9; box-shadow: none; }
+    @media (max-width: 620px) {
+      .shell { padding-top: 0; padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+      .topbar { align-items: center; min-height: 118px; }
+      .title-group h1 { font-size: 27px; }
+      .recipe-card { grid-template-columns: minmax(105px, 36%) minmax(0, 1fr); }
+      .recipe-card .photo, .recipe-card .placeholder { min-height: 145px; }
+      .card-body { padding: 12px; }
+      .recipe-name { font-size: 20px; }
+      .line-item { grid-template-columns: minmax(0, 1fr) auto; }
+      .amount { white-space: normal; text-align: right; overflow-wrap: anywhere; }
+      .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .item-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
   </style>
 </head>
 <body>
@@ -792,6 +869,7 @@
 
     const app = document.querySelector("#app");
     const navButtons = Array.from(document.querySelectorAll("[data-nav]"));
+    let storageProblem = null;
     let db = loadDatabase();
     let route = { view: "list", id: null };
 
@@ -820,13 +898,26 @@
 
     function migrateDatabase(raw) {
       if (!raw || raw.schemaVersion !== 1 || !Array.isArray(raw.recipes)) {
-        return blankDatabase();
+        throw new Error("无效或不支持的数据版本");
+      }
+      const isObject = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
+      const stringsValid = (obj, keys) => keys.every((key) => obj[key] == null || typeof obj[key] === "string");
+      if ((raw.appState != null && (!isObject(raw.appState) || (raw.appState.schemaVersion != null && raw.appState.schemaVersion !== 1))) ||
+          (raw.appState != null && !stringsValid(raw.appState, ["selectedCategory", "searchKeyword", "lastOpenedRecipeId", "updatedAt"])) ||
+          raw.recipes.some((recipe) => !isObject(recipe) ||
+            !stringsValid(recipe, ["id", "name", "category", "description", "difficulty", "status", "notes", "failureNotes", "nextImprovements", "createdAt", "updatedAt"]) ||
+            ["ingredients", "seasonings", "steps", "tasteTags"].some((key) => recipe[key] != null &&
+              (!Array.isArray(recipe[key]) || recipe[key].some((item) => !isObject(item) || !stringsValid(item, ["id", "name", "amount", "unit", "note", "text"])))) ||
+            (recipe.lessons != null && (!isObject(recipe.lessons) || !stringsValid(recipe.lessons, ["failureNotes", "nextImprovements"]))))) {
+        throw new Error("数据结构无效或不支持");
       }
 
       return {
+        ...raw,
         schemaVersion: 1,
         recipes: raw.recipes.map(normalizeRecipe),
         appState: {
+          ...raw.appState,
           schemaVersion: 1,
           selectedCategory: raw.appState?.selectedCategory || "all",
           searchKeyword: raw.appState?.searchKeyword || "",
@@ -839,6 +930,7 @@
     function normalizeRecipe(recipe) {
       const stamp = nowIso();
       return {
+        ...recipe,
         id: recipe.id || createId("recipe"),
         name: recipe.name || "未命名菜谱",
         image: recipe.image || null,
@@ -853,6 +945,7 @@
         tasteTags: Array.isArray(recipe.tasteTags) ? recipe.tasteTags : [],
         status: recipe.status || "regular",
         lessons: {
+          ...recipe.lessons,
           failureNotes: recipe.lessons?.failureNotes || recipe.failureNotes || "",
           nextImprovements: recipe.lessons?.nextImprovements || recipe.nextImprovements || ""
         },
@@ -863,18 +956,29 @@
     }
 
     function loadDatabase() {
+      let raw = null;
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        return migrateDatabase(raw ? JSON.parse(raw) : null);
+        raw = localStorage.getItem(STORAGE_KEY);
+        return raw === null ? blankDatabase() : migrateDatabase(JSON.parse(raw));
       } catch (error) {
         console.warn("Cook_Menu storage read failed", error);
+        storageProblem = { raw };
         return blankDatabase();
       }
     }
 
-    function saveDatabase() {
-      db.appState.updatedAt = nowIso();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+    function saveDatabase(candidate = db) {
+      if (storageProblem) return false;
+      try {
+        const next = { ...candidate, appState: { ...candidate.appState, updatedAt: nowIso() } };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        db = next;
+        return true;
+      } catch (error) {
+        console.warn("Cook_Menu storage write failed", error);
+        alert("保存失败，可能是存储空间不足或浏览器限制。原有本地快照未更改，请保留当前页面并导出数据，或减少图片后重试。");
+        return false;
+      }
     }
 
     function escapeHtml(value) {
@@ -932,11 +1036,21 @@
     }
 
     function render() {
+      if (storageProblem) return renderRecovery();
       setNavActive(route.view);
       if (route.view === "detail") return renderDetail(route.id);
       if (route.view === "form") return renderForm(route.id);
       if (route.view === "settings") return renderSettings();
       return renderList();
+    }
+
+    function renderRecovery() {
+      app.innerHTML = `<header class="topbar"><div class="title-group"><h1>数据需要恢复</h1></div></header>
+        <section class="section warn"><h3>本地数据无法读取</h3>
+        <p>数据可能损坏、版本不受支持，或浏览器禁止访问存储。原有快照未被修改，应用已暂停写入。请勿清除浏览器数据；先导出原始快照，再使用支持该版本的应用或寻求恢复帮助。若存储访问被禁止，请检查浏览器权限后重试。</p>
+        <div class="actions">${storageProblem.raw !== null ? '<button class="ghost-btn" id="exportRaw" type="button">导出原始快照</button>' : ''}<button class="ghost-btn" id="retryStorage" type="button">重新读取</button></div></section>`;
+      document.querySelector("#exportRaw")?.addEventListener("click", () => downloadData(storageProblem.raw, "cook-menu-raw-snapshot.txt", "text/plain"));
+      document.querySelector("#retryStorage").addEventListener("click", () => location.reload());
     }
 
     function renderList() {
@@ -970,8 +1084,12 @@
       document.querySelector("#newRecipeTop").addEventListener("click", () => setRoute({ view: "form", id: null }));
       document.querySelector("#searchInput").addEventListener("input", (event) => {
         db.appState.searchKeyword = event.target.value;
+        const cursor = event.target.selectionStart;
         saveDatabase();
         renderList();
+        const search = document.querySelector("#searchInput");
+        search.focus();
+        search.setSelectionRange(cursor, cursor);
       });
       document.querySelectorAll("[data-category]").forEach((button) => {
         button.addEventListener("click", () => {
@@ -1044,16 +1162,15 @@
       ].filter(Boolean);
 
       app.innerHTML = `
-        <div class="detail-photo">${renderImage(recipe.image, "还没有成品图")}</div>
         <header class="topbar">
           <button class="icon-btn" id="backToList" type="button" aria-label="返回">‹</button>
           <div class="title-group" style="flex:1;">
-            <h1>${escapeHtml(recipe.name)}</h1>
-            <p>${escapeHtml(recipe.description || "这道菜还没有简介。")}</p>
+            <h1>菜谱详情</h1>
           </div>
           <button class="icon-btn" id="editRecipe" type="button" aria-label="编辑">✎</button>
         </header>
-
+        <div class="detail-photo">${renderImage(recipe.image, "还没有成品图")}</div>
+        <div class="title-group"><h2>${escapeHtml(recipe.name)}</h2><p>${escapeHtml(recipe.description || "这道菜还没有简介。")}</p></div>
         <div class="meta">${meta.map((item) => `<span class="pill">${escapeHtml(item)}</span>`).join("")}</div>
 
         <section class="section accent">
@@ -1176,7 +1293,7 @@
 
         <form class="form" id="recipeForm">
           <section class="form-section">
-            <h3>成品图</h3>
+            <h3>成品图（可选）</h3>
             <div class="upload">
               <div class="upload-preview" id="imagePreview">${renderImage(draft.image, "添加成品图")}</div>
               <div class="upload-actions">
@@ -1229,7 +1346,7 @@
           </section>
 
           <section class="form-section">
-            <h3>调料</h3>
+            <h3>调料（可选）</h3>
             <div id="seasoningsEditor">${renderItemEditors(draft.seasonings, "seasoning")}</div>
             <button class="small-btn" id="addSeasoning" type="button">添加调料</button>
           </section>
@@ -1294,21 +1411,17 @@
           alert("请填写菜名。");
           return;
         }
-        if (!recipe.ingredients.length) {
-          alert("请至少填写一条食材。");
+        if (!recipe.ingredients.some((item) => item.name.trim())) {
+          alert("请至少填写一条食材名称。");
           return;
         }
-        if (!recipe.steps.length) {
-          alert("请至少填写一个步骤。");
+        if (!recipe.steps.some((step) => step.text.trim())) {
+          alert("请至少填写一个步骤内容。");
           return;
         }
 
-        if (editing) {
-          db.recipes = db.recipes.map((item) => item.id === id ? recipe : item);
-        } else {
-          db.recipes.unshift(recipe);
-        }
-        saveDatabase();
+        const recipes = editing ? db.recipes.map((item) => item.id === id ? recipe : item) : [recipe, ...db.recipes];
+        if (!saveDatabase({ ...db, recipes })) return;
         setRoute({ view: "detail", id: recipe.id });
       });
     }
@@ -1459,8 +1572,7 @@
       const recipe = db.recipes.find((item) => item.id === id);
       if (!recipe) return;
       if (!confirm(`确定删除「${recipe.name}」吗？删除后当前本地数据里不会保留这条菜谱。`)) return;
-      db.recipes = db.recipes.filter((item) => item.id !== id);
-      saveDatabase();
+      if (!saveDatabase({ ...db, recipes: db.recipes.filter((item) => item.id !== id) })) return;
       setRoute({ view: "list", id: null });
     }
 
@@ -1519,11 +1631,15 @@
     }
 
     function exportData() {
-      const blob = new Blob([JSON.stringify(db, null, 2)], { type: "application/json" });
+      downloadData(JSON.stringify(db, null, 2), `cook-menu-backup-${new Date().toISOString().slice(0, 10)}.json`, "application/json");
+    }
+
+    function downloadData(data, filename, type) {
+      const blob = new Blob([data], { type });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `cook-menu-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      link.download = filename;
       link.click();
       URL.revokeObjectURL(url);
     }
@@ -1534,20 +1650,22 @@
       const reader = new FileReader();
       reader.onload = () => {
         try {
-          db = migrateDatabase(JSON.parse(reader.result));
-          saveDatabase();
+          const imported = migrateDatabase(JSON.parse(reader.result));
+          if (!confirm("导入会覆盖当前本地菜谱。请先导出当前数据备份，确定继续吗？")) return;
+          if (!saveDatabase(imported)) return;
           setRoute({ view: "list", id: null });
         } catch (error) {
           alert("导入失败，请确认是 Cook_Menu 导出的 JSON 文件。");
         }
       };
+      reader.onerror = () => alert("读取备份文件失败，当前数据未更改。请重新选择文件。");
+      reader.onloadend = () => { event.target.value = ""; };
       reader.readAsText(file);
     }
 
     function clearData() {
       if (!confirm("确定清空全部本地菜谱吗？这个操作会删除当前浏览器里的 Cook_Menu 数据。")) return;
-      db = { ...blankDatabase(), recipes: [] };
-      saveDatabase();
+      if (!saveDatabase(blankDatabase())) return;
       setRoute({ view: "list", id: null });
     }
 
@@ -1560,7 +1678,6 @@
       });
     });
 
-    saveDatabase();
     render();
 
     if ("serviceWorker" in navigator) {
